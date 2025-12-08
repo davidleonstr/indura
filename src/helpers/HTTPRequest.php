@@ -28,6 +28,11 @@ class HTTPRequest {
 
     public function send(string $endpoint, array $data = [], string $method = 'GET') {
         $method = strtoupper($method);
+        
+        if (!array_key_exists($method, $this->methods)) {
+            throw new Exception("Unsupported HTTP method: $method");
+        }
+
         $url = $this->baseUrl . '/' . ltrim($endpoint, '/');
         $ch = curl_init();
 
@@ -39,16 +44,18 @@ class HTTPRequest {
             if (!empty($data)) {
                 $url .= '?' . http_build_query($data);
             }
-        } elseif (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-            // Configure cURL according to method
-            if ($method === 'POST') {
+        } else {
+            $methodOption = $this->methods[$method];
+            if ($methodOption === CURLOPT_POST) {
                 curl_setopt($ch, CURLOPT_POST, true);
             } else {
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                curl_setopt($ch, $methodOption, $method);
             }
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        } else {
-            throw new Exception("Unsupported HTTP method: $method");
+
+            $fieldOption = $this->fields[$method];
+            if ($fieldOption !== null) {
+                curl_setopt($ch, $fieldOption, json_encode($data));
+            }
         }
 
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -57,11 +64,8 @@ class HTTPRequest {
 
         if (curl_errno($ch)) {
             $error = curl_error($ch);
-            curl_close($ch);
             throw new Exception($error);
         }
-
-        curl_close($ch);
 
         return json_decode($response, true);
     }
