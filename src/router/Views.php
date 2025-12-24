@@ -1,5 +1,5 @@
 <?php
-namespace indura\routers;
+namespace indura\router;
 
 use Exception;
 
