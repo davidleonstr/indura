@@ -3,7 +3,7 @@
     "description": "A set of lightweight utilities similar to a microframework",
     "autoload": {
         "psr-4": {
-            "ziphp\\": "src/"
+            "indura\\": "src/"
         }
     },
     "require": {}
