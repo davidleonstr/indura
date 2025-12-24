@@ -1,5 +1,5 @@
 <?php
-namespace ziphp;
+namespace indura\render;
 
 use Exception;
 

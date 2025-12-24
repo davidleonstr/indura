@@ -1,5 +1,5 @@
 <?php
-namespace ziphp\db\postgresql;
+namespace indura\db\postgresql;
 
 use PDO;
 use PDOException;

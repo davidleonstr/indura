@@ -1,7 +1,7 @@
 <?php
-namespace ziphp\db;
+namespace indura\validator;
 
-class SchemeValidator {
+class Scheme {
     private $errors = [];
     private $scheme;
     

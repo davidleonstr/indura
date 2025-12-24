@@ -1,10 +1,10 @@
 <?php
-namespace ziphp\helpers;
+namespace indura\json;
 
 /**
  * Class for handling JSON files with object-oriented methods and properties.
  */
-class JsonFile
+class File
 {
     /**
      * Path to the JSON file

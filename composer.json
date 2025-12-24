@@ -1,5 +1,5 @@
 {
-    "name": "davidleonstr/ziphp",
+    "name": "davidleonstr/indura",
     "description": "A set of lightweight utilities similar to a microframework",
     "autoload": {
         "psr-4": {

@@ -1,9 +1,9 @@
 <?php
-namespace ziphp\db;
+namespace indura\db;
 
 use Exception;
 
-use ziphp\helpers\JSONResponse;
+use indura\json\Response;
 
 abstract class BaseController {
     protected $model;
@@ -15,9 +15,9 @@ abstract class BaseController {
     public function index() {
         try {
             $data = $this->model->findAll();
-            JSONResponse::success($data, 'Records successfully obtained');
+            Response::success($data, 'Records successfully obtained');
         } catch (Exception $e) {
-            JSONResponse::error($e->getMessage(), 500);
+            Response::error($e->getMessage(), 500);
         }
     }
 
@@ -25,11 +25,11 @@ abstract class BaseController {
         try {
             $data = $this->model->findById($id);
             if (!$data) {
-                JSONResponse::notFound('Record not found');
+                Response::notFound('Record not found');
             }
-            JSONResponse::success($data, 'Registration successfully obtained');
+            Response::success($data, 'Registration successfully obtained');
         } catch (Exception $e) {
-            JSONResponse::error($e->getMessage(), 500);
+            Response::error($e->getMessage(), 500);
         }
     }
 
@@ -37,13 +37,13 @@ abstract class BaseController {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
             if (!$input) {
-                JSONResponse::error('Invalid JSON data', 400);
+                Response::error('Invalid JSON data', 400);
             }
             
             $data = $this->model->create($input);
-            JSONResponse::success($data, 'Record created successfully', 201);
+            Response::success($data, 'Record created successfully', 201);
         } catch (Exception $e) {
-            JSONResponse::error($e->getMessage(), 400);
+            Response::error($e->getMessage(), 400);
         }
     }
 
@@ -51,13 +51,13 @@ abstract class BaseController {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
             if (!$input) {
-                JSONResponse::error('Invalid JSON data', 400);
+                Response::error('Invalid JSON data', 400);
             }
             
             $data = $this->model->update($id, $input);
-            JSONResponse::success($data, 'Registration successfully updated');
+            Response::success($data, 'Registration successfully updated');
         } catch (Exception $e) {
-            JSONResponse::error($e->getMessage(), 400);
+            Response::error($e->getMessage(), 400);
         }
     }
 
@@ -65,12 +65,12 @@ abstract class BaseController {
         try {
             $result = $this->model->delete($id);
             if ($result) {
-                JSONResponse::success(null, 'Record deleted successfully');
+                Response::success(null, 'Record deleted successfully');
             } else {
-                JSONResponse::error('The record could not be deleted', 500);
+                Response::error('The record could not be deleted', 500);
             }
         } catch (Exception $e) {
-            JSONResponse::error($e->getMessage(), 400);
+            Response::error($e->getMessage(), 400);
         }
     }
 }

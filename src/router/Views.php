@@ -1,9 +1,9 @@
 <?php
-namespace ziphp\routers;
+namespace indura\routers;
 
 use Exception;
 
-class ViewRouter {
+class Views {
     private $routes = [];
     private $viewsPath;
     private $layoutsPath;

@@ -1,7 +1,7 @@
 <?php
-namespace ziphp\helpers;
+namespace indura\json;
 
-class JSONResponse {
+class Response {
     public static function success($data = null, $message = 'Successful operation', $code = 200) {
         http_response_code($code);
         echo json_encode([

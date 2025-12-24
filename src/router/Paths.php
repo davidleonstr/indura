@@ -1,9 +1,9 @@
 <?php
-namespace ziphp\routers;
+namespace indura\routers;
 
-use ziphp\helpers\JSONResponse;
+use indura\json\Response;
 
-class PathRouter {
+class Paths {
     private $routes = [];
     private $prefixDiscriminator = '/^\/api\//';
 
@@ -93,7 +93,7 @@ class PathRouter {
         }
 
         // Route not found
-        JSONResponse::notFound('Endpoint not found');
+        Response::notFound('Endpoint not found');
     }
 
     private function getPath() {
@@ -114,7 +114,7 @@ class PathRouter {
             // Anonymous function
             call_user_func_array($handler, [$params]);
         } else {
-            JSONResponse::error('Invalid route handler', 500);
+            Response::error('Invalid route handler', 500);
         }
     }
 

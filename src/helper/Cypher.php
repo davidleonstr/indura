@@ -1,5 +1,5 @@
 <?php
-namespace ziphp\helpers;
+namespace indura\helpers;
 
 /**
  * Class for encrypting and decrypting data using AES-256-CBC.

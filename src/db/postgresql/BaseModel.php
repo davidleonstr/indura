@@ -1,12 +1,12 @@
 <?php
-namespace ziphp\db\postgresql;
+namespace indura\db\postgresql;
 
 use PDOException;
 use Exception;
 use PDO;
 
-use ziphp\db\SchemeValidator;
-use ziphp\helpers\JSONResponse;
+use indura\validator\Scheme;
+use indura\json\Response;
 
 abstract class BaseModel {
     protected $connection;
@@ -17,7 +17,7 @@ abstract class BaseModel {
     public $schemeValidator;
 
     public function __construct($connection) {
-        $this->schemeValidator = new SchemeValidator($this->validationRules);
+        $this->schemeValidator = new Scheme($this->validationRules);
         $this->connection = $connection;
     }
 
@@ -126,7 +126,7 @@ abstract class BaseModel {
         $errors = $this->schemeValidator->validate($data);
         
         if (!empty($errors)) {
-            JSONResponse::validation($errors);
+            Response::validation($errors);
         }
     }
 }

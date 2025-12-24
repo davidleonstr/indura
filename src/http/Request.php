@@ -1,9 +1,9 @@
 <?php
-namespace ziphp\helpers;
+namespace indura\http;
 
 use Exception;
 
-class HTTPRequest {
+class Request {
     private string $baseUrl;
 
     private array $methods = [
