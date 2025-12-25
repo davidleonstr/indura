@@ -8,6 +8,13 @@ use PDO;
 use indura\validator\Scheme;
 use indura\json\Response;
 
+/**
+ * BaseModel
+ * 
+ * Abstract base class for PostgreSQL database models.
+ * Provides CRUD operations, validation, and field filtering functionality.
+ * Child classes should define table name, primary key, fillable fields, and validation rules.
+ */
 abstract class BaseModel {
     protected $connection;
     protected $table;
@@ -16,11 +23,26 @@ abstract class BaseModel {
     protected $validationRules = [];
     public $schemeValidator;
 
+    /**
+     * Constructor
+     * 
+     * Initializes the model with a database connection and sets up the validation scheme.
+     * 
+     * @param PDO $connection Database connection instance
+     */
     public function __construct($connection) {
         $this->schemeValidator = new Scheme($this->validationRules);
         $this->connection = $connection;
     }
 
+    /**
+     * Retrieves all records from the table
+     * 
+     * Fetches all records ordered by the primary key.
+     * 
+     * @return array Array of records as associative arrays
+     * @throws Exception If database query fails
+     */
     public function findAll() {
         try {
             $sql = "SELECT * FROM {$this->table} ORDER BY {$this->primaryKey}";
@@ -32,6 +54,13 @@ abstract class BaseModel {
         }
     }
 
+    /**
+     * Retrieves a single record by its primary key
+     * 
+     * @param int $id The primary key value
+     * @return array|false Associative array of the record or false if not found
+     * @throws Exception If database query fails
+     */
     public function findById($id) {
         try {
             $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id";
@@ -44,6 +73,16 @@ abstract class BaseModel {
         }
     }
 
+    /**
+     * Creates a new record in the table
+     * 
+     * Validates data, filters to fillable fields only, and inserts the record.
+     * Returns the newly created record including its generated primary key.
+     * 
+     * @param array $data Associative array of field names and values
+     * @return array The newly created record
+     * @throws Exception If validation fails or database operation fails
+     */
     public function create($data) {
         try {
             $this->validate($data);
@@ -69,6 +108,17 @@ abstract class BaseModel {
         }
     }
 
+    /**
+     * Updates an existing record
+     * 
+     * Validates the record exists, validates data, filters to fillable fields,
+     * and updates the record. Returns the updated record.
+     * 
+     * @param int $id The primary key value of the record to update
+     * @param array $data Associative array of field names and values to update
+     * @return array The updated record
+     * @throws Exception If record not found, validation fails, or database operation fails
+     */
     public function update($id, $data) {
         try {
             $existing = $this->findById($id);
@@ -76,7 +126,7 @@ abstract class BaseModel {
                 throw new Exception("Record not found");
             }
             
-            $this->validate($data, $id);
+            $this->validate($data);
             $filteredData = $this->filterFillable($data);
             
             $setParts = [];
@@ -101,6 +151,15 @@ abstract class BaseModel {
         }
     }
 
+    /**
+     * Deletes a record from the table
+     * 
+     * Validates the record exists before attempting deletion.
+     * 
+     * @param int $id The primary key value of the record to delete
+     * @return bool True if deletion was successful
+     * @throws Exception If record not found or database operation fails
+     */
     public function delete($id) {
         try {
             $existing = $this->findById($id);
@@ -118,11 +177,30 @@ abstract class BaseModel {
         }
     }
 
+    /**
+     * Filters data to only include fillable fields
+     * 
+     * Protects against mass-assignment vulnerabilities by only allowing
+     * fields defined in the $fillable property.
+     * 
+     * @param array $data Associative array of data to filter
+     * @return array Filtered array containing only fillable fields
+     */
     protected function filterFillable($data) {
         return array_intersect_key($data, array_flip($this->fillable));
     }
 
-    protected function validate($data, $id = null) {
+    /**
+     * Validates data against the model's validation rules
+     * 
+     * Uses the Scheme validator to validate data. If validation fails,
+     * sends a validation error response and halts execution.
+     * 
+     * @param array $data Associative array of data to validate
+     * @return void
+     * @throws void Sends validation response and exits if validation fails
+     */
+    protected function validate($data) {
         $errors = $this->schemeValidator->validate($data);
         
         if (!empty($errors)) {
