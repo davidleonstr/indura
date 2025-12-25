@@ -2,6 +2,7 @@
 namespace indura\http;
 
 use Exception;
+use JsonException;
 
 class Request {
     private string $baseUrl;
@@ -67,6 +68,10 @@ class Request {
             throw new Exception($error);
         }
 
-        return json_decode($response, true);
+        try {
+            return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            return $response;
+        }
     }
 }
