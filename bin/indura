@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+# Include commands globals
+include dirname(__DIR__) . '/bin/register.php';
+
+# Global to auto register in commands
+global $commands;
+
+# Iterator to auto include command files
+$commandFiles = new DirectoryIterator(dirname(__DIR__) . '/bin/commands');
+
+# Include commands
+foreach ($commandFiles as $file) {
+    if ($file->isDot() || !$file->isFile()) {
+        continue;
+    }
+    include $file->getPathname();
+}
+
+# Command type
+$command = $argv[1];
+
+# Checking and executing command
+if (isset($commands[$command])) {
+    $commands[$command]($argv);
+} else {
+    help($argv);
+}

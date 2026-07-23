@@ -1,0 +1,15 @@
+{
+    "name": "davidleonstr/indura",
+    "description": "A set of PHP lightweight utilities similar to a microframework",
+    "type": "library",
+    "version": "dev-main",
+    "autoload": {
+        "psr-4": {
+            "indura\\": "src/"
+        }
+    },
+    "require": {},
+    "bin": [
+        "bin/indura"
+    ]
+}
